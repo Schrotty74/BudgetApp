@@ -45,13 +45,6 @@ A Progressive Web App (PWA) for simple household budget management — runs dire
 
 The app automatically recognises `.xlsx` files as long as they contain sections labelled **Einnahmen** (Income) and **Ausgaben** (Expenses). Example format:
 
-| Column A | Column B | Column C |
-|----------|----------|----------|
-| 💵 Einnahmen | Betrag (€) | Häufigkeit |
-| 🏦 Gehalt | 2000 | Monatlich |
-| **📋 Ausgaben** | | |
-| 🏠 Miete | 800 | Monatlich |
-
 Supported frequencies: `Monatlich` · `Alle 2 Monate` · `Quartalsweise` · `Jährlich` · `Variabel`
 
 ---
