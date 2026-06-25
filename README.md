@@ -4,7 +4,7 @@
 
 A Progressive Web App (PWA) for simple household budget management — runs directly in the browser, no installation needed, works offline.
 
-🇩🇪 [Deutsche Version](README.de.md)
+🇩🇪 [Deutsche Version](README_de.md)
 
 ---
 
