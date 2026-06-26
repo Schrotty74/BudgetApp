@@ -130,6 +130,7 @@
   }
 
   .header { margin-bottom: 2rem; }
+  .header-icon { display: block; width: 72px; height: 72px; border-radius: 18px; margin-bottom: 0.75rem; }
   .header-label { font-family: 'DM Mono', monospace; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.5rem; }
   .header h1 { font-size: 1.75rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
   .header h1 span.hl { color: var(--accent); }
@@ -287,6 +288,7 @@ if ('serviceWorker' in navigator) {
   </div>
 
   <div class="header">
+    <img src="icon.jpeg" alt="Budget Icon" class="header-icon">
     <div class="header-label">Monatliche Übersicht</div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;">
       <h1>Mein <span class="hl">Budget</span> <span id="offlineBadge">Offline</span></h1>
