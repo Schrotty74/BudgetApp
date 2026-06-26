@@ -1,4 +1,4 @@
-<img src="icon.png" alt="BudgetApp Icon" width="100">
+<img src="icon.png" alt="BudgetApp Icon" width="160">
 
 # 💶 BudgetApp
 
