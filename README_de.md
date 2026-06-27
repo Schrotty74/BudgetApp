@@ -45,6 +45,8 @@ Eine Progressive Web App (PWA) zur einfachen Verwaltung deines Haushaltsbudgets 
 - 📷 **Bild-Export** — Gesamte Ansicht als PNG exportieren (auch als installierte PWA)
 - ✏️ **Bearbeiten** — Einträge hinzufügen, bearbeiten und löschen
 - 👆 **Swipe to delete** — Einträge per Wischgeste auf dem Handy entfernen
+- 📅 **Echter Betrag** — Nicht-monatliche Ausgaben zeigen den tatsächlichen Zahlungsbetrag mit Häufigkeit als Untertitel
+- 🗂️ **Einklappbare Sektionen** — Einnahmen & Ausgaben lassen sich per Tipp ein-/ausklappen
 - 🔔 **Tägliche Erinnerung** — Push-Benachrichtigung zur selbst gewählten Uhrzeit (nur installierte PWA)
 - 🌗 **Dark / Light Mode** — Zwischen dunklem und hellem Design wechseln (☀️ / 🌙)
 - 🌐 **Sprachwechsel** — Jederzeit zwischen Deutsch und Englisch wechseln
