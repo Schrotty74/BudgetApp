@@ -22,6 +22,9 @@
     <td><img src="screenshots/demo-top.png" width="300" alt="Overview & Chart"></td>
     <td><img src="screenshots/demo-bottom.png" width="300" alt="Income & Expenses"></td>
   </tr>
+  <tr>
+    <td colspan="2" align="center"><sub>📋 Screenshots with sample data</sub></td>
+  </tr>
 </table>
 
 **Track your monthly income & expenses at a glance**

@@ -22,6 +22,9 @@
     <td><img src="screenshots/demo-top.png" width="300" alt="Übersicht & Chart"></td>
     <td><img src="screenshots/demo-bottom.png" width="300" alt="Einnahmen & Ausgaben"></td>
   </tr>
+  <tr>
+    <td colspan="2" align="center"><sub>📋 Screenshots mit Beispieldaten</sub></td>
+  </tr>
 </table>
 
 **Monatliche Einnahmen & Ausgaben auf einen Blick**
