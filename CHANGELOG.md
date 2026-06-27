@@ -1,0 +1,62 @@
+# Changelog
+
+Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
+
+---
+
+## [1.3] – 2026-06-27
+
+### Neu
+- **Echter Zahlungsbetrag** — Nicht-monatliche Ausgaben (z.B. quartalsweise, jährlich) zeigen jetzt den tatsächlichen Betrag statt dem monatlichen Äquivalent; die Häufigkeit erscheint als kleine graue Zeile unter dem Namen
+- **Einklappbare Sektionen** — Einnahmen & Ausgaben lassen sich per Tipp auf den Sektions-Titel ein- und ausklappen; Zustand bleibt nach Neuladen erhalten
+
+### Geändert
+- Redundanter „🔁 Monatlich"-Badge bei Einnahmen entfernt
+- README (DE & EN) um neue Features ergänzt
+
+### Behoben
+- Ausrichtung der Einnahmen-Zeilen nach Layout-Umbau korrigiert
+
+---
+
+## [1.2] – 2026-06-27
+
+### Neu
+- **Bild-Export** — Gesamte App-Ansicht als PNG exportieren (auch als installierte PWA)
+- **Tägliche Erinnerung** — Push-Benachrichtigung zur selbst gewählten Uhrzeit; auf iPhone/iPad nur als installierte PWA verfügbar
+- **Live-Demo-Button** — Badge in der README verlinkt direkt zur GitHub Pages Demo
+- **Screenshots in README** — Zwei Demo-Screenshots mit Beispieldaten
+
+### Geändert
+- Fehlermeldung bei Benachrichtigungen unter iOS Safari erklärt nun, dass die PWA installiert werden muss
+- README-Feature-Liste aktualisiert
+
+---
+
+## [1.1] – 2026-06-26
+
+### Neu
+- **Neues Logo** — Wallet-Icon ersetzt das bisherige Euro-Symbol
+- **PWA-Icon** — Neues Logo wird als App-Icon verwendet (Home-Bildschirm, Desktop-Install)
+- **Badges** — Tech-, Sicherheits- und Status-Badges in beiden READMEs
+
+### Geändert
+- Logo-Größe in der README auf 160 px erhöht
+
+---
+
+## [1.0] – 2026-06-23
+
+### Erstveröffentlichung
+- **Übersicht** — Monatliches Polster, Einnahmen & Ausgaben auf einen Blick
+- **Donut-Chart** — Visuelle Aufschlüsselung der Ausgaben-Kategorien mit Legende
+- **Excel-Import** — `.xlsx` Dateien einlesen; Einnahmen & Ausgaben werden automatisch erkannt
+- **Excel-Export** — Budget als `.xlsx` exportieren
+- **PDF-Export** — Druckfertige Monatsübersicht
+- **Einträge bearbeiten** — Hinzufügen, bearbeiten und löschen; inline ohne Seitenwechsel
+- **Swipe to delete** — Einträge per Wischgeste auf dem Handy entfernen
+- **Dark / Light Mode** — Zwischen dunklem und hellem Design wechseln
+- **Sprachwechsel** — Jederzeit zwischen Deutsch und Englisch wechseln
+- **Lokale Speicherung** — Alle Daten bleiben ausschließlich im Browser (localStorage)
+- **Offline-fähig** — Service Worker cached die App für die Nutzung ohne Internet
+- **Installierbar** — Als PWA auf iPhone/iPad oder Desktop speicherbar
