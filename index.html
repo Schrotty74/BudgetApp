@@ -47,23 +47,31 @@
 
 
   /* Export buttons */
-  .export-row { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-  .btn-export {
-    flex: 1; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; color: var(--muted); font-family: 'DM Sans',sans-serif;
-    font-size: 0.82rem; padding: 0.6rem 0.5rem; cursor: pointer;
-    transition: border-color 0.15s, color 0.15s; text-align: center;
-  }
-  .btn-export:hover { border-color: var(--accent); color: var(--accent); }
-
-  /* Import */
-  .btn-import {
+  /* Import / Export Dropdown */
+  .io-menu { position: relative; display: inline-block; }
+  .io-toggle {
     background: var(--surface2); border: 1px solid var(--border); border-radius: 8px;
     color: var(--muted); font-family: 'DM Sans',sans-serif; font-size: 0.8rem;
     padding: 0.35rem 0.85rem; cursor: pointer; transition: border-color 0.15s, color 0.15s;
-    white-space: nowrap; display: inline-block;
+    white-space: nowrap;
   }
-  .btn-import:hover { border-color: var(--accent); color: var(--accent); }
+  .io-toggle:hover, .io-toggle.active { border-color: var(--accent); color: var(--accent); }
+  .io-dropdown {
+    display: none; position: absolute; right: 0; top: calc(100% + 6px);
+    background: var(--surface2); border: 1px solid var(--border); border-radius: 12px;
+    min-width: 200px; z-index: 200; overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  }
+  .io-dropdown.open { display: block; }
+  .io-item {
+    display: block; width: 100%; background: none; border: none;
+    border-bottom: 1px solid var(--border); color: var(--fg);
+    font-family: 'DM Sans',sans-serif; font-size: 0.88rem;
+    padding: 0.72rem 1rem; cursor: pointer; text-align: left;
+    transition: background 0.12s, color 0.12s;
+  }
+  .io-item:last-child { border-bottom: none; }
+  .io-item:hover { background: rgba(255,255,255,0.06); color: var(--accent); }
   .empty-card {
     background: var(--surface); border: 1px dashed var(--border); border-radius: 16px;
     padding: 2.5rem 1.5rem; text-align: center; margin-bottom: 1.5rem;
@@ -297,18 +305,19 @@ if ('serviceWorker' in navigator) {
     <div class="header-label">Monatliche Übersicht</div>
     <div style="display:flex;align-items:center;justify-content:space-between;gap:0.5rem;flex-wrap:wrap;">
       <h1>Mein <span class="hl">Budget</span> <span id="offlineBadge">Offline</span></h1>
-      <label class="btn-import">📥 Excel<input type="file" accept=".xlsx,.xls" onchange="importExcel(this)" style="display:none"></label>
+      <div class="io-menu" id="ioMenu">
+        <button class="io-toggle" id="ioToggleBtn" onclick="toggleIOMenu()">📤 Import / Export</button>
+        <div class="io-dropdown" id="ioDropdown">
+          <label class="io-item" id="ioImport">📥 Excel importieren<input type="file" accept=".xlsx,.xls" onchange="importExcel(this);closeIOMenu()" style="display:none"></label>
+          <button class="io-item" id="ioExportExcel" onclick="exportExcel();closeIOMenu()">📊 Excel exportieren</button>
+          <button class="io-item" id="ioExportPDF" onclick="exportPDF();closeIOMenu()">🖨️ PDF exportieren</button>
+          <button class="io-item" id="ioExportImage" onclick="exportImage();closeIOMenu()">📷 Bild exportieren</button>
+        </div>
+      </div>
     </div>
   </div>
 
   <div class="import-toast" id="importToast"></div>
-
-  <!-- Export Row -->
-  <div class="export-row">
-    <button class="btn-export" onclick="exportPDF()">📄 PDF exportieren</button>
-    <button class="btn-export" onclick="exportExcel()">📊 Excel exportieren</button>
-    <button class="btn-export" onclick="exportImage()">📷 Als Bild</button>
-  </div>
 
 
   <div id="emptyState" style="display:none">
@@ -427,8 +436,11 @@ const I18N = {
     freqLabel: 'Häufigkeit',
     namePlaceholderIncome: 'z. B. Nebenjob',
     namePlaceholderExpense: 'z. B. Streaming',
-    exportPDF: '📄 PDF exportieren',
+    ioMenu: '📤 Import / Export',
+    ioImport: '📥 Excel importieren',
+    exportPDF: '🖨️ PDF exportieren',
     exportExcel: '📊 Excel exportieren',
+    exportImage: '📷 Bild exportieren',
     importExcel: '📥 Excel',
     importBig: '📥 Excel importieren',
     noData: 'Keine Daten vorhanden',
@@ -463,8 +475,11 @@ const I18N = {
     freqLabel: 'Frequency',
     namePlaceholderIncome: 'e.g. Side job',
     namePlaceholderExpense: 'e.g. Streaming',
-    exportPDF: '📄 Export PDF',
+    ioMenu: '📤 Import / Export',
+    ioImport: '📥 Import Excel',
+    exportPDF: '🖨️ Export PDF',
     exportExcel: '📊 Export Excel',
+    exportImage: '📷 Export image',
     importExcel: '📥 Excel',
     importBig: '📥 Import Excel',
     noData: 'No data yet',
@@ -518,8 +533,11 @@ function applyLang() {
   document.querySelectorAll('.btn-add')[1].textContent = l('addExpense');
   document.querySelectorAll('.total-row span')[0].textContent = l('total');
   document.querySelectorAll('.total-row span')[2].textContent = l('totalMonth');
-  document.querySelectorAll('.btn-export')[0].textContent = l('exportPDF');
-  document.querySelectorAll('.btn-export')[1].textContent = l('exportExcel');
+  document.getElementById('ioToggleBtn').textContent = l('ioMenu');
+  document.getElementById('ioImport').childNodes[0].textContent = l('ioImport');
+  document.getElementById('ioExportExcel').textContent = l('exportExcel');
+  document.getElementById('ioExportPDF').textContent = l('exportPDF');
+  document.getElementById('ioExportImage').textContent = l('exportImage');
   document.querySelector('.empty-title').textContent = l('noData');
   document.querySelector('.empty-sub').textContent = l('noDataSub');
   document.querySelector('.footer').textContent = l('footer');
@@ -803,6 +821,19 @@ function initSectionState() {
     });
   } catch(e) {}
 }
+
+// ---- Import/Export Dropdown ----
+function toggleIOMenu() {
+  const open = document.getElementById('ioDropdown').classList.toggle('open');
+  document.getElementById('ioToggleBtn').classList.toggle('active', open);
+}
+function closeIOMenu() {
+  document.getElementById('ioDropdown').classList.remove('open');
+  document.getElementById('ioToggleBtn').classList.remove('active');
+}
+document.addEventListener('click', e => {
+  if (!document.getElementById('ioMenu').contains(e.target)) closeIOMenu();
+});
 
 function toggleAdd(type) {
   const id = type==='income' ? 'incomeAddForm' : 'expenseAddForm';
@@ -1201,7 +1232,7 @@ initSectionState();
 
 // ---- Export as Image ----
 async function exportImage() {
-  const btn = document.querySelector('[onclick="exportImage()"]');
+  const btn = document.getElementById('ioExportImage');
   const orig = btn.textContent;
   btn.textContent = '⏳ Wird erstellt…';
   btn.disabled = true;
