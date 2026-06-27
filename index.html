@@ -662,8 +662,9 @@ function renderIncome() {
       <div class="swipe-bg">🗑</div>
       <div class="row">
         <span class="row-icon">${r.icon}</span>
-        <span class="row-name">${r.name}</span>
-        <span class="row-freq">🔁 ${t('freqMonthly')}</span>
+        <div class="row-name-wrap">
+          <span class="row-name">${r.name}</span>
+        </div>
         <span class="row-amount green">${fmt(r.amount)}</span>
         <div class="row-actions">
           <button class="icon-btn edit" onclick="startEdit('income',${i})" title="Bearbeiten">✎</button>
