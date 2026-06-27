@@ -1164,7 +1164,12 @@ async function toggleReminder() {
     return;
   }
   if (!('Notification' in window)) {
-    alert('Dein Browser unterstützt keine Benachrichtigungen.');
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    if (isIOS) {
+      alert('Benachrichtigungen funktionieren auf iPhone/iPad nur wenn die App installiert ist.\n\n👉 Teilen → „Zum Home-Bildschirm" → App öffnen → 🔔 aktivieren');
+    } else {
+      alert('Dein Browser unterstützt keine Benachrichtigungen.');
+    }
     return;
   }
   if (Notification.permission === 'denied') {
