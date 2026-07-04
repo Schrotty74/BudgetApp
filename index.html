@@ -1258,10 +1258,10 @@ async function checkForUpdate() {
     const stored = JSON.parse(localStorage.getItem('updateCheck') || '{}');
     const now = Date.now();
     if (stored.ts && now - stored.ts < 86400000) return; // once per day
-    const res = await fetch('https://api.github.com/repos/Schrotty74/BudgetApp/releases/latest', {cache: 'no-store'});
+    const res = await fetch('https://schrotty74.github.io/BudgetApp/version.json?t=' + now, {cache: 'no-store'});
     if (!res.ok) return;
     const data = await res.json();
-    const latest = (data.tag_name || '').trim();
+    const latest = (data.version || '').trim();
     localStorage.setItem('updateCheck', JSON.stringify({ts: now, latest}));
     if (latest && latest !== APP_VERSION) {
       const banner = document.getElementById('updateBanner');
