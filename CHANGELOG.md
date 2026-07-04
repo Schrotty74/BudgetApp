@@ -4,6 +4,13 @@ Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 
 ---
 
+## [1.5] – 2026-07-04
+
+### Neu
+- **Update-Hinweis** — Die App prüft einmal täglich ob eine neue Version auf GitHub verfügbar ist; bei einem Update erscheint ein Banner mit Tippen-zum-Aktualisieren (schließbar, DE/EN übersetzt)
+
+---
+
 ## [1.4] – 2026-06-27
 
 ### Neu

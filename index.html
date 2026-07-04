@@ -89,6 +89,16 @@
     border-radius: 10px; color: var(--accent); font-size: 0.85rem;
     padding: 0.6rem 1rem; margin-bottom: 1rem; text-align: center; display: none;
   }
+  .update-banner {
+    display: none; align-items: center; justify-content: space-between; gap: 0.5rem;
+    background: var(--accent-dim); border: 1px solid rgba(74,222,128,0.35);
+    border-radius: 10px; color: var(--accent); font-size: 0.83rem;
+    padding: 0.6rem 1rem; margin-bottom: 1rem; cursor: pointer;
+  }
+  .update-banner.show { display: flex; }
+  .update-banner-text { flex: 1; }
+  .update-banner-close { background: none; border: none; color: var(--accent); font-size: 1rem; cursor: pointer; padding: 0 0.2rem; opacity: 0.7; }
+  .update-banner-close:hover { opacity: 1; }
 
   /* Install banner */
   #installBanner {
@@ -318,6 +328,10 @@ if ('serviceWorker' in navigator) {
   </div>
 
   <div class="import-toast" id="importToast"></div>
+  <div class="update-banner" id="updateBanner" onclick="location.reload(true)">
+    <span class="update-banner-text" id="updateBannerText"></span>
+    <button class="update-banner-close" onclick="event.stopPropagation();dismissUpdate()" title="Schließen">×</button>
+  </div>
 
 
   <div id="emptyState" style="display:none">
@@ -402,7 +416,7 @@ if ('serviceWorker' in navigator) {
     </div><!-- /expenseBody -->
   </div>
 
-  <div class="footer">Daten werden lokal gespeichert · Läuft offline · v1.4</div>
+  <div class="footer">Daten werden lokal gespeichert · Läuft offline · v1.5</div>
 </div>
 
 <div id="saveIndicator">✓ gespeichert</div>
@@ -445,8 +459,9 @@ const I18N = {
     importBig: '📥 Excel importieren',
     noData: 'Keine Daten vorhanden',
     noDataSub: 'Excel importieren oder manuell eintragen',
-    footer: 'Daten werden lokal gespeichert · Läuft offline · v1.4',
+    footer: 'Daten werden lokal gespeichert · Läuft offline · v1.5',
     saved: '✓ gespeichert',
+    updateAvailable: v => `🆕 Neue Version verfügbar: ${v} — Tippen zum Aktualisieren`,
     freqs: ['🔁 Monatlich','📅 Alle 2 Monate','📅 Quartalsweise','📅 Jährlich','🔀 Variabel'],
     freqMonthly: 'Monatlich',
     deleteConfirm: null,
@@ -484,8 +499,9 @@ const I18N = {
     importBig: '📥 Import Excel',
     noData: 'No data yet',
     noDataSub: 'Import Excel or add entries manually',
-    footer: 'Data stored locally · Works offline · v1.4',
+    footer: 'Data stored locally · Works offline · v1.5',
     saved: '✓ saved',
+    updateAvailable: v => `🆕 New version available: ${v} — Tap to update`,
     freqs: ['🔁 Monthly','📅 Every 2 months','📅 Quarterly','📅 Yearly','🔀 Variable'],
     freqMonthly: 'Monthly',
     deleteConfirm: null,
@@ -542,6 +558,8 @@ function applyLang() {
   document.querySelector('.empty-sub').textContent = l('noDataSub');
   document.querySelector('.footer').textContent = l('footer');
   document.getElementById('saveIndicator').textContent = l('saved');
+  const ub = document.getElementById('updateBanner');
+  if (ub.dataset.version) document.getElementById('updateBannerText').textContent = l('updateAvailable')(ub.dataset.version);
   // Re-render rows so freq labels update
   update(false);
 }
@@ -1229,6 +1247,31 @@ checkEmptyState();
 applyTheme();
 if (currentLang === 'en') applyLang();
 initSectionState();
+
+// ---- Update check ----
+const APP_VERSION = 'v1.5';
+function dismissUpdate() {
+  document.getElementById('updateBanner').classList.remove('show');
+}
+async function checkForUpdate() {
+  try {
+    const stored = JSON.parse(localStorage.getItem('updateCheck') || '{}');
+    const now = Date.now();
+    if (stored.ts && now - stored.ts < 86400000) return; // once per day
+    const res = await fetch('https://api.github.com/repos/Schrotty74/BudgetApp/releases/latest', {cache: 'no-store'});
+    if (!res.ok) return;
+    const data = await res.json();
+    const latest = (data.tag_name || '').trim();
+    localStorage.setItem('updateCheck', JSON.stringify({ts: now, latest}));
+    if (latest && latest !== APP_VERSION) {
+      const banner = document.getElementById('updateBanner');
+      banner.dataset.version = latest;
+      document.getElementById('updateBannerText').textContent = l('updateAvailable')(latest);
+      banner.classList.add('show');
+    }
+  } catch(e) {}
+}
+setTimeout(checkForUpdate, 3000);
 
 // ---- Export as Image ----
 async function exportImage() {
