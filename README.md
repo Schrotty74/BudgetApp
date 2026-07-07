@@ -12,6 +12,7 @@
 ![localStorage](https://img.shields.io/badge/storage-localStorage%20only-informational)
 ![No Tracking](https://img.shields.io/badge/tracking-none-success)
 ![No Login](https://img.shields.io/badge/login-not%20required-success)
+[![Discord](https://img.shields.io/badge/Discord-Join%20Community-5865F2?logo=discord&logoColor=white)](https://discord.gg/RbsvqRCPQ)
 
 [![Live Demo](https://img.shields.io/badge/🚀%20Live%20Demo-open-brightgreen)](https://schrotty74.github.io/BudgetApp)
 
@@ -91,6 +92,12 @@ Supported frequencies: `Monatlich` · `Alle 2 Monate` · `Quartalsweise` · `Jä
 - [SheetJS](https://sheetjs.com) for Excel import & export
 - Service Worker for offline support
 - localStorage for local data persistence
+
+---
+
+## 💬 Community
+
+Questions, feedback and discussions are welcome on [Discord](https://discord.gg/RbsvqRCPQ).
 
 ---
 
