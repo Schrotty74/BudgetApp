@@ -287,7 +287,7 @@
 </style>
 <script>
 if ('serviceWorker' in navigator) {
-  const swCode = "const CACHE = 'budget-v1';\nconst ASSETS = [\n  './',\n  './index.html',\n  './manifest.json',\n  './icons/icon-192.png',\n  './icons/icon-512.png',\n  './icons/apple-touch-icon.png',\n  'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap'\n];\n\n// Install: cache all static assets\nself.addEventListener('install', e => {\n  e.waitUntil(\n    caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())\n  );\n});\n\n// Activate: remove old caches\nself.addEventListener('activate', e => {\n  e.waitUntil(\n    caches.keys().then(keys =>\n      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))\n    ).then(() => self.clients.claim())\n  );\n});\n\n// Fetch: cache-first for assets, network-first for everything else\nself.addEventListener('fetch', e => {\n  e.respondWith(\n    caches.match(e.request).then(cached => {\n      if (cached) return cached;\n      return fetch(e.request).then(resp => {\n        if (resp && resp.status === 200 && resp.type !== 'opaque') {\n          const clone = resp.clone();\n          caches.open(CACHE).then(cache => cache.put(e.request, clone));\n        }\n        return resp;\n      }).catch(() => caches.match('./index.html'));\n    })\n  );\n});\n";
+  const swCode = "const CACHE = 'budget-v1.6';\nconst ASSETS = [\n  './',\n  './index.html',\n  './manifest.json',\n  './icons/icon-192.png',\n  './icons/icon-512.png',\n  './icons/apple-touch-icon.png',\n  'https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap'\n];\n\n// Install: cache all static assets\nself.addEventListener('install', e => {\n  e.waitUntil(\n    caches.open(CACHE).then(cache => cache.addAll(ASSETS)).then(() => self.skipWaiting())\n  );\n});\n\n// Activate: remove old caches\nself.addEventListener('activate', e => {\n  e.waitUntil(\n    caches.keys().then(keys =>\n      Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k)))\n    ).then(() => self.clients.claim())\n  );\n});\n\n// Fetch: cache-first for assets, network-first for everything else\nself.addEventListener('fetch', e => {\n  e.respondWith(\n    caches.match(e.request).then(cached => {\n      if (cached) return cached;\n      return fetch(e.request).then(resp => {\n        if (resp && resp.status === 200 && resp.type !== 'opaque') {\n          const clone = resp.clone();\n          caches.open(CACHE).then(cache => cache.put(e.request, clone));\n        }\n        return resp;\n      }).catch(() => caches.match('./index.html'));\n    })\n  );\n});\n";
   const blob = new Blob([swCode], {type: 'application/javascript'});
   navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(console.warn);
 }
@@ -322,6 +322,8 @@ if ('serviceWorker' in navigator) {
           <button class="io-item" id="ioExportExcel" onclick="exportExcel();closeIOMenu()">📊 Excel exportieren</button>
           <button class="io-item" id="ioExportPDF" onclick="exportPDF();closeIOMenu()">🖨️ PDF exportieren</button>
           <button class="io-item" id="ioExportImage" onclick="exportImage();closeIOMenu()">📷 Bild exportieren</button>
+          <button class="io-item" id="ioExportJson" onclick="exportJsonBackup();closeIOMenu()">💾 JSON-Backup exportieren</button>
+          <label class="io-item" id="ioImportJson">♻️ JSON-Backup wiederherstellen<input type="file" accept=".json,application/json" onchange="importJsonBackup(this);closeIOMenu()" style="display:none"></label>
         </div>
       </div>
     </div>
@@ -416,7 +418,7 @@ if ('serviceWorker' in navigator) {
     </div><!-- /expenseBody -->
   </div>
 
-  <div class="footer">Daten werden lokal gespeichert · Läuft offline · v1.5</div>
+  <div class="footer">Daten werden lokal gespeichert · Läuft offline · v1.6</div>
 </div>
 
 <div id="saveIndicator">✓ gespeichert</div>
@@ -455,13 +457,19 @@ const I18N = {
     exportPDF: '🖨️ PDF exportieren',
     exportExcel: '📊 Excel exportieren',
     exportImage: '📷 Bild exportieren',
+    exportJson: '💾 JSON-Backup exportieren',
+    importJson: '♻️ JSON-Backup wiederherstellen',
     importExcel: '📥 Excel',
     importBig: '📥 Excel importieren',
     noData: 'Keine Daten vorhanden',
     noDataSub: 'Excel importieren oder manuell eintragen',
-    footer: 'Daten werden lokal gespeichert · Läuft offline · v1.5',
+    footer: 'Daten werden lokal gespeichert · Läuft offline · v1.6',
     saved: '✓ gespeichert',
     updateAvailable: v => `🆕 Neue Version verfügbar: ${v} — Tippen zum Aktualisieren`,
+    jsonExported: '✓ JSON-Backup exportiert',
+    jsonRestored: '✓ JSON-Backup wiederhergestellt',
+    jsonInvalid: 'Dieses JSON-Backup konnte nicht gelesen werden.',
+    restoreConfirm: 'JSON-Backup wiederherstellen?\nAktuelle Daten und Einstellungen werden ersetzt.',
     freqs: ['🔁 Monatlich','📅 Alle 2 Monate','📅 Quartalsweise','📅 Jährlich','🔀 Variabel'],
     freqMonthly: 'Monatlich',
     deleteConfirm: null,
@@ -495,13 +503,19 @@ const I18N = {
     exportPDF: '🖨️ Export PDF',
     exportExcel: '📊 Export Excel',
     exportImage: '📷 Export image',
+    exportJson: '💾 Export JSON backup',
+    importJson: '♻️ Restore JSON backup',
     importExcel: '📥 Excel',
     importBig: '📥 Import Excel',
     noData: 'No data yet',
     noDataSub: 'Import Excel or add entries manually',
-    footer: 'Data stored locally · Works offline · v1.5',
+    footer: 'Data stored locally · Works offline · v1.6',
     saved: '✓ saved',
     updateAvailable: v => `🆕 New version available: ${v} — Tap to update`,
+    jsonExported: '✓ JSON backup exported',
+    jsonRestored: '✓ JSON backup restored',
+    jsonInvalid: 'This JSON backup could not be read.',
+    restoreConfirm: 'Restore JSON backup?\nCurrent data and settings will be replaced.',
     freqs: ['🔁 Monthly','📅 Every 2 months','📅 Quarterly','📅 Yearly','🔀 Variable'],
     freqMonthly: 'Monthly',
     deleteConfirm: null,
@@ -512,6 +526,7 @@ let currentLang = localStorage.getItem('budgetLang') || 'de';
 let currentTheme = localStorage.getItem('budgetTheme') || 'dark';
 
 function t(key) { return I18N[currentLang][key]; }
+function l(key) { return t(key); }
 
 function applyTheme() {
   const root = document.getElementById('htmlRoot');
@@ -554,6 +569,8 @@ function applyLang() {
   document.getElementById('ioExportExcel').textContent = l('exportExcel');
   document.getElementById('ioExportPDF').textContent = l('exportPDF');
   document.getElementById('ioExportImage').textContent = l('exportImage');
+  document.getElementById('ioExportJson').textContent = l('exportJson');
+  document.getElementById('ioImportJson').childNodes[0].textContent = l('importJson');
   document.querySelector('.empty-title').textContent = l('noData');
   document.querySelector('.empty-sub').textContent = l('noDataSub');
   document.querySelector('.footer').textContent = l('footer');
@@ -671,6 +688,13 @@ function saveData() {
     clearTimeout(saveTimer);
     saveTimer = setTimeout(() => ind.classList.remove('show'), 1800);
   } catch(e) {}
+}
+
+function showToast(message) {
+  const toast = document.getElementById('importToast');
+  toast.textContent = message;
+  toast.style.display = 'block';
+  setTimeout(() => toast.style.display = 'none', 4000);
 }
 
 // ---- Helpers ----
@@ -1242,6 +1266,110 @@ function exportExcel() {
   XLSX.writeFile(wb, 'MeinBudget_' + new Date().toLocaleDateString('de-AT').replace(/\./g,'-') + '.xlsx');
 }
 
+// ---- JSON Backup ----
+function exportJsonBackup() {
+  const backup = {
+    app: 'BudgetApp',
+    version: APP_VERSION,
+    exportedAt: new Date().toISOString(),
+    data: { income, expenses },
+    settings: {
+      lang: currentLang,
+      theme: currentTheme,
+      sectionState: JSON.parse(localStorage.getItem('sectionState') || '{}'),
+      reminder: {
+        enabled: localStorage.getItem('reminderEnabled') === 'true',
+        time: localStorage.getItem('reminderTime') || '20:00'
+      }
+    }
+  };
+
+  const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+  const link = document.createElement('a');
+  link.href = URL.createObjectURL(blob);
+  link.download = 'MeinBudget_Backup_' + new Date().toLocaleDateString('de-AT').replace(/\./g, '-') + '.json';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(link.href);
+  showToast(l('jsonExported'));
+}
+
+function normalizeBackupData(data) {
+  if (!data || !Array.isArray(data.income) || !Array.isArray(data.expenses)) return null;
+  const cleanIncome = data.income.map(r => ({
+    icon: String(r.icon || '💰').trim() || '💰',
+    name: String(r.name || '').trim(),
+    amount: Number(r.amount)
+  })).filter(r => r.name && Number.isFinite(r.amount) && r.amount >= 0);
+
+  const cleanExpenses = data.expenses.map(r => {
+    const freq = FREQ_KEYS.includes(r.freq) ? r.freq : 'Monatlich';
+    const amount = Number(r.amount ?? freqFromMonthly(Number(r.monthly), freq));
+    return {
+      icon: String(r.icon || '💸').trim() || '💸',
+      name: String(r.name || '').trim(),
+      freq,
+      amount,
+      monthly: freqToMonthly(amount, freq)
+    };
+  }).filter(r => r.name && Number.isFinite(r.amount) && r.amount >= 0);
+
+  return { income: cleanIncome, expenses: cleanExpenses };
+}
+
+function importJsonBackup(input) {
+  const file = input.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const parsed = JSON.parse(e.target.result);
+      const restoredData = normalizeBackupData(parsed.data || parsed);
+      if (!restoredData) throw new Error('Invalid backup');
+      if (!confirm(l('restoreConfirm'))) {
+        input.value = '';
+        return;
+      }
+
+      income = restoredData.income;
+      expenses = restoredData.expenses;
+      localStorage.setItem('budgetData', JSON.stringify({ income, expenses }));
+
+      const settings = parsed.settings || {};
+      if (settings.lang === 'de' || settings.lang === 'en') {
+        currentLang = settings.lang;
+        localStorage.setItem('budgetLang', currentLang);
+      }
+      if (settings.theme === 'dark' || settings.theme === 'light') {
+        currentTheme = settings.theme;
+        localStorage.setItem('budgetTheme', currentTheme);
+      }
+      if (settings.sectionState && typeof settings.sectionState === 'object') {
+        localStorage.setItem('sectionState', JSON.stringify(settings.sectionState));
+      }
+      if (settings.reminder) {
+        localStorage.setItem('reminderEnabled', settings.reminder.enabled ? 'true' : 'false');
+        if (settings.reminder.time) localStorage.setItem('reminderTime', settings.reminder.time);
+      }
+
+      document.querySelectorAll('.section-body').forEach(el => el.classList.remove('collapsed'));
+      document.querySelectorAll('.section-chevron').forEach(el => el.style.transform = '');
+      applyTheme();
+      applyLang();
+      initSectionState();
+      updateReminderBtn(localStorage.getItem('reminderEnabled') === 'true');
+      update(false);
+      showToast(l('jsonRestored'));
+    } catch(err) {
+      alert(l('jsonInvalid'));
+    }
+    input.value = '';
+  };
+  reader.readAsText(file);
+}
+
 update(false);
 checkEmptyState();
 applyTheme();
@@ -1249,7 +1377,7 @@ if (currentLang === 'en') applyLang();
 initSectionState();
 
 // ---- Update check ----
-const APP_VERSION = 'v1.5';
+const APP_VERSION = 'v1.6';
 function dismissUpdate() {
   document.getElementById('updateBanner').classList.remove('show');
 }

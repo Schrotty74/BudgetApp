@@ -4,6 +4,13 @@ Alle wesentlichen Änderungen an diesem Projekt werden hier dokumentiert.
 
 ---
 
+## [1.6] – 2026-07-08
+
+### Neu
+- **JSON-Backup** — Vollständiges Backup und Wiederherstellung für Budgetdaten und App-Einstellungen direkt im Import/Export-Menü
+
+---
+
 ## [1.5] – 2026-07-04
 
 ### Neu
